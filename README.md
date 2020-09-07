@@ -1,9 +1,9 @@
-# Text Summarizer Web Application
+# Auto-Question Generation Web Application
 Author: Xavier M. Puspus  
 
 
 ### Description
-I used a text summarizer based off of [this paper](https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf). I built a web application that summarizes english text from plain text or url parsing. Link to the text summarizer can be found [here](https://text-summarizer-textrank.herokuapp.com/).
+I used a BERT wrapper based off of [this paper](https://arxiv.org/abs/1810.04805). I built a web application that generates questions and possible answers from plain text or url parsing. Link to the question generator can be found [here](https://bert-question-generator.herokuapp.com/).
   
 
 ### Deployment Through Web Application
@@ -12,7 +12,7 @@ I used the most recently released API of [Streamlit](https://streamlit.io) to de
 
 ### Running the App
 
-In order to run the app, you must have `gensim` available on your machine, and install streamlit using:
+In order to run the app, you must have `text2text` available on your machine, and install streamlit using:
 
 ```console
 foo@bar:~$ pip install streamlit
@@ -27,4 +27,4 @@ foo@bar:~$ streamlit run app.py
 
 The web app should look something like this:
 
-![Sample image of the text summarizer web application.](images/summarizer_webapp.png)
+![Sample image of the question generator web application.](images/qgen_webapp.png)
