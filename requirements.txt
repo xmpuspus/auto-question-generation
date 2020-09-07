@@ -1,4 +1,6 @@
-streamlit==0.60
-gensim==3.8.1
-sumy
+nltk==3.5
+streamlit==0.66.0
+gensim==3.8.3
+sumy==0.8.1
+text2text==0.0.9
 sklearn

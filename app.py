@@ -6,45 +6,45 @@ from sumy.summarizers.reduction import ReductionSummarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 import nltk; nltk.download('punkt')
+from text2text.text_generator import TextGenerator
+
+# Load QuestionGen model
+qg = TextGenerator(output_type="question")
+
 
 # Header
 ### Set Title
-st.title("Text Summarizer")
-st.markdown("""Summarize a long paragraph based on [this reference](https://web.eecs.umich.edu/~mihalcea/papers/mihalcea.emnlp04.pdf). You can summarize from either a website link or from plain text.""")
+st.title("Question Generator")
+st.markdown("""Generates questions from a long paragraph based on [this reference](https://arxiv.org/abs/1810.04805). The AI can generate questions from either a website link or from plain text.""")
 
-input_text_type = st.selectbox("Type of Input (Text or Link?)", ["Link", "Text"])
+# Question Count
+question_count = st.slider('Number of questions to generate', 1, 20, 3, 1)
+
+input_text_type = st.selectbox("Type of Input (Text or Link?)", ["Text", "Link"])
 
 
 if input_text_type=="Text":
-    
-    # Ratio of words as summary output
-    ratio = st.sidebar.slider("Summary Ratio: ", 0., 1., 0.2, 0.01)
-
 
     # Text input
     text = st.text_area("Input long paragraph:", """Thomas A. Anderson is a man living two lives. By day he is an average computer programmer and by night a hacker known as Neo. Neo has always questioned his reality, but the truth is far beyond his imagination. Neo finds himself targeted by the police when he is contacted by Morpheus, a legendary computer hacker branded a terrorist by the government. Morpheus awakens Neo to the real world, a ravaged wasteland where most of humanity have been captured by a race of machines that live off of the humans' body heat and electrochemical energy and who imprison their minds within an artificial reality known as the Matrix. As a rebel against the machines, Neo must return to the Matrix and confront the agents: super-powerful computer programs devoted to snuffing out Neo and the entire human rebellion.""", height=250)
+    
 
-    # Word count
-    # word_count = st.sidebar.number_input("Summary Word Count", 0, len(text.split(" ")))
-
-    # Summarize
-    summary = summarize(text, ratio=ratio)
-    keywords_list = keywords(text, ratio=ratio).split("\n")
-    if not summary:
-        st.write("Input a longer paragraph.")
-    else:
-        st.subheader("Summary")
-        st.write(summary)
-        st.markdown("**Keywords:** " + ", ".join("`" + i + "`" for i in keywords_list))
+    questions_generator = qg.predict([text]*question_count)
+    questions_list = [i[0] for i in questions_generator]
+    answers_list = [i[1] for i in questions_generator]
+    st.subheader("Generated Questions")
+    
+    for i in range(len(questions_list)):
+        st.write(questions_list[i])
+        st.text(f"Possible answer is along the lines of: {answers_list[i]}")
         
 else:
     # Link input
     link = st.text_input("Input website/link here:", "https://www.osapabroad.com/academics/the-oxford-tutorial/")
-    st.subheader("Summary")
+    st.subheader("Generated Questions")
     LANGUAGE = "english"
-    SENTENCES_COUNT = st.sidebar.slider("Sentence Count", 1, 20, 10, 1)
-    kw_ratio = st.sidebar.slider("Keyword Ratio: ", 0., 1., 0.2, 0.01)
-#     SENTENCES_COUNT = 20
+    SENTENCES_COUNT = 100
+
     try:
         parser = HtmlParser.from_url(link, Tokenizer(LANGUAGE))
         # parser = PlaintextParser.from_file("document.txt", Tokenizer(LANGUAGE))
@@ -59,10 +59,12 @@ else:
         sentences_list = [str(sentence) for sentence in summarizer(parser.document, SENTENCES_COUNT)]
 
         summary_text = "\n".join(sentences_list)
-        st.write(summary_text)
 
-        keywords_list = keywords(summary_text, ratio=kw_ratio).split("\n")
+        questions_generator = qg.predict([summary_text]*question_count)
+        questions_list = [i[0] for i in questions_generator]
 
-        st.markdown("**Keywords:** " + ", ".join("`" + i + "`" for i in keywords_list))
+        for i in range(len(questions_list)):
+            st.write(questions_list[i])
+            st.text(f"Possible answer is along the lines of: {answers_list[i]}")
     except:
         st.write("Link cannot be parsed.")
