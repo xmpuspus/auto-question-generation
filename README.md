@@ -3,8 +3,7 @@ Author: Xavier M. Puspus
 
 
 ### Description
-I used a BERT wrapper based off of [this paper](https://arxiv.org/abs/1810.04805). I built a web application that generates questions and possible answers from plain text or url parsing. Link to the question generator can be found [here](https://bert-question-generator.herokuapp.com/).
-  
+I used a BERT wrapper based off of [this paper](https://arxiv.org/abs/1810.04805). I built a web application that generates questions and possible answers from plain text or from text parsed from a website.
 
 ### Deployment Through Web Application
 
